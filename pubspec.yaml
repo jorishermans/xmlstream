@@ -1,0 +1,4 @@
+name: xmlstream
+description: A library to stream a xml string
+dependencies:
+  unittest: any
