@@ -1,5 +1,5 @@
 name: xmlstream
-version: 0.1.0
+version: 0.2.1
 author: Joris Hermans <hermansj@gmail.com>
 description: A lightweight XML Parser.
 homepage: https://github.com/jorishermans/xmlstream
