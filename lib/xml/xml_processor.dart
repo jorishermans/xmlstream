@@ -3,11 +3,23 @@ part of xml_stream;
 abstract class XmlProcessor<T> {
   
   T element;
+  StreamController<T> _controller;
   
-  void onStartTag(String tag, String name);
+  XmlProcessor() {
+    _controller = new StreamController<T>();
+  }
   
-  void onEndTag(String tag, String name);
+  void onOpenTag(String tag);
+  
+  void onClosedTag(String tag) {
+    _controller.add(element);
+  }
   
   void onAttribute(String key, String value);
 
+  void onText(String text);
+  
+  Stream<T> onProcess() {
+    return _controller.stream;
+  }
 }

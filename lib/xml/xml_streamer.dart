@@ -5,9 +5,9 @@ class XmlStreamer {
   
   String raw;
   StreamController<XmlEvent> _controller;
+  bool _shutdown = false;
   
   XmlStreamer(this.raw);
-  
   
   Stream<XmlEvent> read() {
     _controller = new StreamController<XmlEvent>();
@@ -62,6 +62,7 @@ class XmlStreamer {
           event.value = "$value$ch";
       }
       prev = ch;
+      if (_shutdown) break;
     }
     return _controller.stream;
   }
@@ -72,4 +73,6 @@ class XmlStreamer {
          ..key=EMPTY;
     return event;
   }
+  
+  void shutdown() { _shutdown = true; }
 }
