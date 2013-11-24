@@ -12,6 +12,16 @@ See here a simple example how to use it in your application.
 
 	var xmlStreamer = new XmlStreamer(rawText);
 	xmlStreamer.read().listen((e) => print("listen: $e"));
+	
+These are the xml states:
+
+* Top
+* Open
+* Closed
+* Attribute
+* Text
+
+Namespace and cdate are still on the todo list to support!
 
 ### Contributing ###
  
