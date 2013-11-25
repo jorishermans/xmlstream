@@ -23,6 +23,10 @@ These are the xml states:
 
 Namespace and cdate are still on the todo list to support!
 
+### Ideas ###
+
+It is based upon the SAX's principles from Java.
+
 ### Contributing ###
  
 If you found a bug, just create a new issue or even better fork and issue a
