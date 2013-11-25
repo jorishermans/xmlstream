@@ -11,9 +11,9 @@ class XmlSupervisor<T> {
   
   _onListen(XmlEvent e) {
     if (e.state==XmlState.Open) {
-      _xmlProcessor.onOpenTag(e.value);
+      _xmlProcessor.shouldOpenTag(e.value);
     } else if (e.state == XmlState.Closed) {
-      _xmlProcessor.onClosedTag(e.value);
+      _xmlProcessor.shouldClosedTag(e.value);
     } else if (e.state == XmlState.Attribute) {
       _xmlProcessor.onAttribute(e.key, e.value);
     } else if (e.state == XmlState.Text) {
