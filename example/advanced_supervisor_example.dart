@@ -15,7 +15,7 @@ void main() {
   
   var xmlStreamer = new XmlStreamer(rawText);
   
-  var xmlSupervisor = new XmlSupervisor<Item>(xmlStreamer, new ItemProcessor());
+  var xmlSupervisor = new XmlObjectBuilder<Item>(xmlStreamer, new ItemProcessor());
   
   xmlSupervisor.onProcess().listen((e) => print("listen: $e"));
 }
@@ -45,7 +45,7 @@ class ItemProcessor extends XmlParentProcessor<Item> {
     }
   }
 
-  void onText(String text) {} 
+  void onCharacters(String text) {} 
 }
 
 class SubItemProcessor extends XmlProcessor<SubItem> {
@@ -64,7 +64,7 @@ class SubItemProcessor extends XmlProcessor<SubItem> {
     }
   }
 
-  void onText(String text) {
+  void onCharacters(String text) {
       element.value = text;
   } 
 }

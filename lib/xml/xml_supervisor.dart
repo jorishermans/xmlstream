@@ -1,11 +1,11 @@
 part of xml_stream;
 
-class XmlSupervisor<T> {
+class XmlObjectBuilder<T> {
   
   XmlStreamer _xmlStream;
   XmlProcessor<T> _xmlProcessor;
   
-  XmlSupervisor(this._xmlStream, this._xmlProcessor) {
+  XmlObjectBuilder(this._xmlStream, this._xmlProcessor) {
     _xmlStream.read().listen(_onListen);
   }
   
@@ -17,7 +17,7 @@ class XmlSupervisor<T> {
     } else if (e.state == XmlState.Attribute) {
       _xmlProcessor.shouldAttribute(e.key, e.value);
     } else if (e.state == XmlState.Text) {
-      _xmlProcessor.shouldText(e.value);
+      _xmlProcessor.shouldCharacters(e.value);
     } 
   }
   

@@ -12,6 +12,7 @@ class XmlState {
   static const Text = const XmlState('Text');
   static const Namespace = const XmlState('Namespace');
   static const CDATA = const XmlState('CDATA');
+  static const Comment = const XmlState('Comment');
 
   String toString() => _type;
 }

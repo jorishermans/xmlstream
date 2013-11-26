@@ -34,9 +34,9 @@ abstract class XmlProcessor<T> {
     }
   }
   
-  void shouldText(String text) {
+  void shouldCharacters(String text) {
     if (isOnCurrentTag()) {
-      this.onText(text);
+      this.onCharacters(text);
     }
   }
   
@@ -46,7 +46,7 @@ abstract class XmlProcessor<T> {
   }
   
   void onAttribute(String key, String value);
-  void onText(String text);
+  void onCharacters(String text);
   
   bool isScope() => scopedName == tagName;
   bool isOnCurrentTag() => currentTag == tagName;

@@ -36,9 +36,9 @@ abstract class XmlParentProcessor<T> extends XmlProcessor {
   }
 
   void shouldText(String text) {
-    super.shouldText(text);
+    super.shouldCharacters(text);
     for (XmlProcessor child in _children) {
-      child.onText(text);
+      child.onCharacters(text);
     };
   }
 }

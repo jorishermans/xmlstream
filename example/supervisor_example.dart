@@ -7,9 +7,9 @@ void main() {
   
   var xmlStreamer = new XmlStreamer(rawText);
   
-  var xmlSupervisor = new XmlSupervisor<Item>(xmlStreamer, new ItemProcessor());
+  var xmlObjectBuilder = new XmlObjectBuilder<Item>(xmlStreamer, new ItemProcessor());
   
-  xmlSupervisor.onProcess().listen((e) => print("listen: $e"));
+  xmlObjectBuilder.onProcess().listen((e) => print("listen: $e"));
 }
 
 class ItemProcessor extends XmlProcessor<Item> {
@@ -24,7 +24,7 @@ class ItemProcessor extends XmlProcessor<Item> {
     }
   }
 
-  void onText(String text) {
+  void onCharacters(String text) {
     element.value = text;
   } 
 }

@@ -31,9 +31,13 @@ class XmlStreamer {
           event = createXmlEvent(XmlState.Closed);
           break;
         case XmlChar.SPACE:
-          if (event.state == XmlState.Open || event.state == XmlState.Attribute) {
+          if (event.state == XmlState.Open && event.value == '!--') {
+            event = createXmlEvent(XmlState.Comment);
+          } else if (event.state == XmlState.Open || event.state == XmlState.Attribute) {
             _controller.add(event);
             event = createXmlEvent(event.state);
+          } else if (event.state == XmlState.Comment) {
+            // do nothing
           } else {
             var value = event.value;
             event.value = "$value$ch";
