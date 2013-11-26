@@ -36,11 +36,8 @@ class XmlStreamer {
           } else if (event.state == XmlState.Open || event.state == XmlState.Attribute) {
             _controller.add(event);
             event = createXmlEvent(event.state);
-          } else if (event.state == XmlState.Comment) {
-            // do nothing
           } else {
-            var value = event.value;
-            event.value = "$value$ch";
+            event = addCharToValue(event, ch);
           }
           break;
         case XmlChar.EQUALS:
@@ -50,6 +47,11 @@ class XmlStreamer {
             event.key = value;
           } else {
             event.value = "$value$ch";
+          }
+          break;
+        case XmlChar.DASH:
+          if (event.state != XmlState.Comment) {
+            event = addCharToValue(event, ch);
           }
           break;
         case XmlChar.QUESTIONMARK:
@@ -62,13 +64,18 @@ class XmlStreamer {
         case XmlChar.NEWLINE:
           break;
         default:
-          var value = event.value;
-          event.value = "$value$ch";
+          event = addCharToValue(event, ch);
       }
       prev = ch;
       if (_shutdown) break;
     }
     return _controller.stream;
+  }
+  
+  XmlEvent addCharToValue(XmlEvent event, String ch) {
+    var value = event.value;
+    event.value = "$value$ch";
+    return event;
   }
 
   XmlEvent createXmlEvent(XmlState state) {

@@ -9,5 +9,6 @@ class XmlChar {
   static const QUESTIONMARK = '?';
   static const SINGLE_QUOTES = "'";
   static const DOUBLE_QUOTES = '"';
+  static const DASH = "-";
   static const NEWLINE = "\n";
 }
