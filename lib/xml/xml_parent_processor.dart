@@ -39,8 +39,4 @@ abstract class XmlParentProcessor<T> extends XmlProcessor {
       child.onText(text);
     };
   }
-
-  Map<int, XmlProcessor> asMap() {
-    return _children.asMap();
-  }
 }
