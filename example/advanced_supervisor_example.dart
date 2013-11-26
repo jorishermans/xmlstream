@@ -4,7 +4,8 @@ void main() {
   print("Hello, World!");
   
   var rawText = '''<?xml version="1.0" encoding="UTF-8"?>
-                    <items>                    
+                    <items>
+                      <sub name="outer">scope</sub>                    
                       <item name="flow">
                         <sub name="one">hello</sub>
                         <sub name="two">world</sub>
@@ -24,7 +25,9 @@ class ItemProcessor extends XmlParentProcessor<Item> {
   
   void registerProcessors() {
     subItemProcessor = new SubItemProcessor();
-    subItemProcessor.onProcess().listen((value) => element.add(value));
+    subItemProcessor.onProcess().listen((value) { 
+      if (isScope()) element.add(value); 
+    });
     add(subItemProcessor);
   }
   
@@ -37,15 +40,12 @@ class ItemProcessor extends XmlParentProcessor<Item> {
   }
   
   void onAttribute(String key, String value) {
-    if (key == "name" && isScope()) {
+    if (key == "name") {
       element.name = value;
     }
-    super.onAttribute(key, value);
   }
 
-  void onText(String text) {
-    super.onText(text);
-  } 
+  void onText(String text) {} 
 }
 
 class SubItemProcessor extends XmlProcessor<SubItem> {
@@ -59,15 +59,13 @@ class SubItemProcessor extends XmlProcessor<SubItem> {
   }
   
   void onAttribute(String key, String value) {
-    if (key == "name" && isScope()) {
+    if (key == "name") {
       element.name = value;
     }
   }
 
   void onText(String text) {
-    if (isScope()) {
       element.value = text;
-    }
   } 
 }
 
