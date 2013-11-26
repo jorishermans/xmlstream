@@ -28,13 +28,15 @@ abstract class XmlParentProcessor<T> extends XmlProcessor {
     };
   }
   
-  void onAttribute(String key, String value) {
+  void shouldAttribute(String key, String value) {
+    super.shouldAttribute(key, value);
     for (XmlProcessor child in _children) {
       child.onAttribute(key, value);
     };
   }
 
-  void onText(String text) {
+  void shouldText(String text) {
+    super.shouldText(text);
     for (XmlProcessor child in _children) {
       child.onText(text);
     };

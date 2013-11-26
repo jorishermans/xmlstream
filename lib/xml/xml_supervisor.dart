@@ -15,9 +15,9 @@ class XmlSupervisor<T> {
     } else if (e.state == XmlState.Closed) {
       _xmlProcessor.shouldClosedTag(e.value);
     } else if (e.state == XmlState.Attribute) {
-      _xmlProcessor.onAttribute(e.key, e.value);
+      _xmlProcessor.shouldAttribute(e.key, e.value);
     } else if (e.state == XmlState.Text) {
-      _xmlProcessor.onText(e.value);
+      _xmlProcessor.shouldText(e.value);
     } 
   }
   
