@@ -19,7 +19,14 @@ void main() {
   xmlSupervisor.onProcess().listen((e) => print("listen: $e"));
 }
 
-class ItemProcessor extends XmlProcessor<Item> {
+class ItemProcessor extends XmlParentProcessor<Item> {
+  SubItemProcessor subItemProcessor;
+  
+  void registerProcessors() {
+    subItemProcessor = new SubItemProcessor();
+    subItemProcessor.onProcess().listen((value) => element.add(value));
+    add(subItemProcessor);
+  }
   
   ItemProcessor() {
     tagName = "item";
@@ -33,15 +40,44 @@ class ItemProcessor extends XmlProcessor<Item> {
     if (key == "name" && isScope()) {
       element.name = value;
     }
+    super.onAttribute(key, value);
   }
 
-  void onText(String text) {} 
+  void onText(String text) {
+    super.onText(text);
+  } 
+}
+
+class SubItemProcessor extends XmlProcessor<SubItem> {
+  
+  SubItemProcessor() {
+    tagName = "sub";
+  }
+  
+  void onOpenTag(String tag) {
+     element = new SubItem();
+  }
+  
+  void onAttribute(String key, String value) {
+    if (key == "name" && isScope()) {
+      element.name = value;
+    }
+  }
+
+  void onText(String text) {
+    if (isScope()) {
+      element.value = text;
+    }
+  } 
 }
 
 class Item {
   String name;
+  List<SubItem> subItems = new List<SubItem>();
   
-  String toString() => "$name";
+  void add(SubItem subItem) => subItems.add(subItem);
+  
+  String toString() => "$name --> $subItems";
 }
 
 class SubItem {
