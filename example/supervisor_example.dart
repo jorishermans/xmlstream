@@ -14,6 +14,10 @@ void main() {
 
 class ItemProcessor extends XmlProcessor<Item> {
   
+  ItemProcessor() {
+    tagName = "item";
+  }
+  
   void onOpenTag(String tag) {
      element = new Item();
   }

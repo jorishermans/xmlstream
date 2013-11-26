@@ -45,6 +45,10 @@ You see an item object in it. So we want to pump the data in the following objec
 You can do that by creating a class that extends from XmlProcessor<Item>.
 
 	class ItemProcessor extends XmlProcessor<Item> {
+  		ItemProcessor() {
+    		tagName = "item";
+  		}
+  		
   		void onOpenTag(String tag) {
      		element = new Item();
   		}
