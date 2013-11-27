@@ -12,8 +12,8 @@ main() {
                         <item>This is a sentence!</item>
                        </hello>''';
     
-    var states = [XmlState.Top ,XmlState.Open, XmlState.Attribute, XmlState.Open, XmlState.Open, XmlState.Text, XmlState.Closed, XmlState.Open, XmlState.Text, XmlState.Closed, XmlState.Closed, XmlState.Open, XmlState.Text, XmlState.Closed, XmlState.Closed];
-    var values = ["","hello","flow","item","subitem","internal","subitem","subitem","hello","subitem","item","item","This is a sentence!","item","hello"];
+    var states = [XmlState.StartDocument, XmlState.Top ,XmlState.Open, XmlState.Attribute, XmlState.Open, XmlState.Open, XmlState.Text, XmlState.Closed, XmlState.Open, XmlState.Text, XmlState.Closed, XmlState.Closed, XmlState.Open, XmlState.Text, XmlState.Closed, XmlState.Closed, XmlState.EndDocument];
+    var values = ["", "","hello","flow","item","subitem","internal","subitem","subitem","hello","subitem","item","item","This is a sentence!","item","hello",""];
     int count = 0;
     
     var xmlStreamer = new XmlStreamer(rawText);

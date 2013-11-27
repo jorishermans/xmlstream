@@ -18,12 +18,17 @@ class XmlObjectBuilder<T> {
       _xmlProcessor.shouldAttribute(e.key, e.value);
     } else if (e.state == XmlState.Text) {
       _xmlProcessor.shouldCharacters(e.value);
-    } 
+    } else if (e.state == XmlState.EndDocument) {
+      _onFinishedEvent.signal();
+    }
   }
   
   Stream<T> onProcess() {
     return _xmlProcessor.onProcess();
   }
+  
+  final EventStream _onFinishedEvent = new EventStream();
+  Stream get onFinished => _onFinishedEvent.stream;
   
   void shutdown() {
     _xmlStream.shutdown();

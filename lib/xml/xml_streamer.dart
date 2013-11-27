@@ -5,6 +5,7 @@ class XmlStreamer {
   
   String raw;
   StreamController<XmlEvent> _controller;
+  
   bool _shutdown = false;
   
   XmlStreamer(this.raw);
@@ -12,7 +13,7 @@ class XmlStreamer {
   Stream<XmlEvent> read() {
     _controller = new StreamController<XmlEvent>();
     
-    XmlEvent event = new XmlEvent(XmlState.Top);
+    XmlEvent event = createAndAddXmlEvent(XmlState.StartDocument);
     String prev;
     var chars_raw = this.raw.split("");
     for (var ch in chars_raw) {
@@ -69,6 +70,7 @@ class XmlStreamer {
       prev = ch;
       if (_shutdown) break;
     }
+    event = createAndAddXmlEvent(XmlState.EndDocument);
     return _controller.stream;
   }
   
@@ -78,6 +80,12 @@ class XmlStreamer {
     return event;
   }
 
+  XmlEvent createAndAddXmlEvent(XmlState state) {
+    XmlEvent event = createXmlEvent(state);
+    _controller.add(event);
+    return event;
+  }
+  
   XmlEvent createXmlEvent(XmlState state) {
     XmlEvent event = new XmlEvent(state);
     event..value=EMPTY
