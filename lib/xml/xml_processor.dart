@@ -17,6 +17,8 @@ abstract class XmlProcessor<T> {
     if (tagName==tag) {
       onOpenTag(tag);
       scopedName=tag;
+    } else if (isScope()) {
+      onScopedTag(tag);
     }
     currentTag=tag;
   }
@@ -41,12 +43,13 @@ abstract class XmlProcessor<T> {
   }
   
   void onOpenTag(String tag);
+  void onScopedTag(String tag) {}
   void onClosedTag(String tag) {
     _controller.add(element);
   }
   
-  void onAttribute(String key, String value);
-  void onCharacters(String text);
+  void onAttribute(String key, String value) {}
+  void onCharacters(String text) {}
   
   bool isScope() => scopedName == tagName;
   bool isOnCurrentTag() => currentTag == tagName;
