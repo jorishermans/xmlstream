@@ -7,7 +7,7 @@ abstract class XmlProcessor<T> {
   
   String tagName;
   String currentTag;
-  String scopedName;
+  String scopedTag;
   
   XmlProcessor() {
     _controller = new StreamController<T>(); 
@@ -16,7 +16,7 @@ abstract class XmlProcessor<T> {
   void shouldOpenTag(String tag) {
     if (tagName==tag) {
       onOpenTag(tag);
-      scopedName=tag;
+      scopedTag=tag;
     } else if (isScope()) {
       onScopedTag(tag);
     }
@@ -26,7 +26,7 @@ abstract class XmlProcessor<T> {
   void shouldClosedTag(String tag) {
     if (tagName==tag) {
       onClosedTag(tag);
-      scopedName="";
+      scopedTag="";
     }
   }
   
@@ -39,11 +39,16 @@ abstract class XmlProcessor<T> {
   void shouldCharacters(String text) {
     if (isOnCurrentTag()) {
       this.onCharacters(text);
+    } else if (isScope()) {
+      this.onScopedCharacters(text);
     }
   }
   
   void onOpenTag(String tag);
+  
   void onScopedTag(String tag) {}
+  void onScopedCharacters(String text) {}
+  
   void onClosedTag(String tag) {
     _controller.add(element);
   }
@@ -51,7 +56,7 @@ abstract class XmlProcessor<T> {
   void onAttribute(String key, String value) {}
   void onCharacters(String text) {}
   
-  bool isScope() => scopedName == tagName;
+  bool isScope() => scopedTag == tagName;
   bool isOnCurrentTag() => currentTag == tagName;
   
   Stream<T> onProcess() {
