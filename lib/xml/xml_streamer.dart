@@ -4,6 +4,8 @@ class XmlStreamer {
   static const EMPTY = '';
   
   String raw;
+  String _open_value;
+  
   StreamController<XmlEvent> _controller;
   
   bool _shutdown = false;
@@ -20,12 +22,16 @@ class XmlStreamer {
       switch(ch) {
         case XmlChar.LT:
           if (event.state != null && event.value.trim().isNotEmpty) {
-            _controller.add(event);
+            _addElement(event);
           }
           event = createXmlEvent(XmlState.Open);
           break;
         case XmlChar.GT:
-          _controller.add(event);
+          if (prev == XmlChar.SLASH) {
+            event = createXmlEvent(XmlState.Closed);
+            event.value = _open_value;
+          }
+          _addElement(event);
           event = createXmlEvent(XmlState.Text);
           break;
         case XmlChar.SLASH:
@@ -39,7 +45,7 @@ class XmlStreamer {
           if (event.state == XmlState.Open && event.value == '!--') {
             event = createXmlEvent(XmlState.Comment);
           } else if (event.state == XmlState.Open || event.state == XmlState.Attribute) {
-            _controller.add(event);
+            _addElement(event);
             event = createXmlEvent(event.state);
           } else {
             event = addCharToValue(event, ch);
@@ -76,6 +82,15 @@ class XmlStreamer {
     }
     event = createAndAddXmlEvent(XmlState.EndDocument);
     return _controller.stream;
+  }
+  
+  XmlEvent _addElement(XmlEvent event) {
+    _controller.add(event);
+    if (event.state == XmlState.Open) {
+      _open_value = event.value;
+    } 
+    event = null;
+    return event;
   }
   
   XmlEvent addCharToValue(XmlEvent event, String ch) {
