@@ -31,16 +31,18 @@ abstract class XmlProcessor<T> {
   }
   
   void shouldAttribute(String key, String value) {
-    if (isOnCurrentTag()) {
+    if (element!=null && isOnCurrentTag()) {
       this.onAttribute(key, value);
     }
   }
   
   void shouldCharacters(String text) {
-    if (isOnCurrentTag()) {
-      this.onCharacters(text);
-    } else if (isScope()) {
-      this.onScopedCharacters(text);
+    if (element != null) {
+      if (isOnCurrentTag()) {
+        this.onCharacters(text);
+      } else if (isScope()) {
+        this.onScopedCharacters(text);
+      }
     }
   }
   

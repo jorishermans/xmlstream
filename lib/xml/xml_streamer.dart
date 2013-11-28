@@ -29,7 +29,11 @@ class XmlStreamer {
           event = createXmlEvent(XmlState.Text);
           break;
         case XmlChar.SLASH:
-          event = createXmlEvent(XmlState.Closed);
+          if (event.state == XmlState.Open) { 
+            event = createXmlEvent(XmlState.Closed);
+          } else {
+            event = addCharToValue(event, ch);
+          }
           break;
         case XmlChar.SPACE:
           if (event.state == XmlState.Open && event.value == '!--') {

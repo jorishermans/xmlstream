@@ -4,7 +4,8 @@ void main() {
   print("Hello, World!"); 
   
   var rawText = '''<?xml version="1.0" encoding="UTF-8"?>
-                    <items>
+                     <outer name="outer">scope</sub>
+                     <items>
                       <sub name="outer">scope</sub>                    
                       <item name="flow">
                         <sub name="one">hello</sub>
