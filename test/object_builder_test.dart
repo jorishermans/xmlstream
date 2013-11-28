@@ -4,7 +4,7 @@ import 'package:xmlstream/xmlstream.dart';
 void main() {
   print("Hello, World!");
   
-  var rawText = '<?xml version="1.0" encoding="UTF-8"?><item name="flow">world</item><item name="text">say what</item>';
+  var rawText = '<?xml version="1.0" encoding="UTF-8"?><item name="flow">world</item><item name="text">say what?</item>';
   
   var xmlStreamer = new XmlStreamer(rawText);
   
@@ -19,7 +19,7 @@ void main() {
     test('testing end result items', () {
       expect(items.length, 2);
       expect(items.first.name, "flow");
-      expect(items.last.value, "say what");
+      expect(items.last.value, "say what?");
     });
   });
 }

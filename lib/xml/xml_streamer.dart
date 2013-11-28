@@ -66,7 +66,11 @@ class XmlStreamer {
           }
           break;
         case XmlChar.QUESTIONMARK:
-          event = createXmlEvent(XmlState.Top);
+          if (prev == XmlChar.LT || event.state == XmlState.Top || event.state == XmlState.StartDocument) {
+            event = createXmlEvent(XmlState.Top);
+          } else {
+            event = addCharToValue(event, ch);
+          }
           break;
         case XmlChar.SINGLE_QUOTES:
           break;
