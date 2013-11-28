@@ -47,7 +47,7 @@ class XmlStreamer {
           break;
         case XmlChar.EQUALS:
           var value = event.value;
-          if (event.state == XmlState.Open) {
+          if (event.state == XmlState.Open || event.state == XmlState.Attribute) {
             event = createXmlEvent(XmlState.Attribute);
             event.key = value;
           } else {
