@@ -1,6 +1,6 @@
 part of xml_stream;
 
-class XmlEvent {
+class XmlEvent extends XmlBaseEvent {
   XmlState state;
   String key;
   String value;

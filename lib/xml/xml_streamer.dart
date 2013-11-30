@@ -24,29 +24,33 @@ class XmlStreamer {
           if (event.state != null && event.value.trim().isNotEmpty) {
             _addElement(event);
           }
-          event = createXmlEvent(XmlState.Open);
+          event = _createXmlEvent(XmlState.Open);
           break;
         case XmlChar.GT:
           if (prev == XmlChar.SLASH) {
-            event = createXmlEvent(XmlState.Closed);
+            if ((event.value.length -1) == event.value.lastIndexOf("/")) {
+              event.value = event.value.substring(0, event.value.lastIndexOf("/"));
+            }
+            event = _createXmlEventAndCheck(event, XmlState.Closed);
             event.value = _open_value;
           }
           _addElement(event);
-          event = createXmlEvent(XmlState.Text);
+          event = _createXmlEvent(XmlState.Text);
           break;
         case XmlChar.SLASH:
           if (event.state == XmlState.Open) { 
-            event = createXmlEvent(XmlState.Closed);
+            event = _createXmlEvent(XmlState.Closed);
           } else {
             event = addCharToValue(event, ch);
           }
           break;
         case XmlChar.SPACE:
           if (event.state == XmlState.Open && event.value == '!--') {
-            event = createXmlEvent(XmlState.Comment);
+            event = _createXmlEvent(XmlState.Comment);
           } else if (event.state == XmlState.Open || event.state == XmlState.Attribute) {
             _addElement(event);
-            event = createXmlEvent(event.state);
+            event = _createXmlEvent(event.state);
+            event.fired = true;
           } else {
             event = addCharToValue(event, ch);
           }
@@ -54,7 +58,7 @@ class XmlStreamer {
         case XmlChar.EQUALS:
           var value = event.value;
           if (event.state == XmlState.Open || event.state == XmlState.Attribute) {
-            event = createXmlEvent(XmlState.Attribute);
+            event = _createXmlEventAndCheck(event, XmlState.Attribute);
             event.key = value;
           } else {
             event.value = "$value$ch";
@@ -67,7 +71,7 @@ class XmlStreamer {
           break;
         case XmlChar.QUESTIONMARK:
           if (prev == XmlChar.LT || event.state == XmlState.Top || event.state == XmlState.StartDocument) {
-            event = createXmlEvent(XmlState.Top);
+            event = _createXmlEvent(XmlState.Top);
           } else {
             event = addCharToValue(event, ch);
           }
@@ -93,7 +97,7 @@ class XmlStreamer {
     if (event.state == XmlState.Open) {
       _open_value = event.value;
     } 
-    event = null;
+    event.fired = true;
     return event;
   }
   
@@ -104,12 +108,20 @@ class XmlStreamer {
   }
 
   XmlEvent createAndAddXmlEvent(XmlState state) {
-    XmlEvent event = createXmlEvent(state);
+    XmlEvent event = _createXmlEvent(state);
     _controller.add(event);
+    event.fired = true;
     return event;
   }
   
-  XmlEvent createXmlEvent(XmlState state) {
+  XmlEvent _createXmlEventAndCheck(XmlEvent event, XmlState state) {
+    if (event.fired == false) {
+      _addElement(event);
+    }
+    return _createXmlEvent(state);
+  }
+  
+  XmlEvent _createXmlEvent(XmlState state) {
     XmlEvent event = new XmlEvent(state);
     event..value=EMPTY
          ..key=EMPTY;
