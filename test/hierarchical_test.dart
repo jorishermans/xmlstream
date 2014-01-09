@@ -35,7 +35,7 @@ main() {
       test('using a stream', () {
         var c = new Completer();
         var streamCount = 0;
-        var stream = new File("test1.xml").openRead(); 
+        var stream = new File("./test1.xml").openRead(); 
         var xmlStreamer = new XmlStreamer.fromStream(stream);
         xmlStreamer.read().listen((e) {
           expect(e.state, states[streamCount]);
