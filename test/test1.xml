@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<hello attr="flow">
+		<item>
+			<subitem>internal</subitem>
+			<subitem>hello</subitem>
+		</item>
+	<item>This is a sentence!</item>
+</hello>
