@@ -62,7 +62,7 @@ class XmlStreamer {
         break;
       case XmlChar.GT:
         if (prev == XmlChar.SLASH) {
-          if ((event.value.length -1) == event.value.lastIndexOf("/")) {
+          if ((event.value.length > 0) && (event.value.length -1) == event.value.lastIndexOf("/")) {
             event.value = event.value.substring(0, event.value.lastIndexOf("/"));
           }
           event = _createXmlEventAndCheck(event, XmlState.Closed);
@@ -72,10 +72,10 @@ class XmlStreamer {
         event = _createXmlEvent(XmlState.Text);
         break;
       case XmlChar.SLASH:
-        if (event.state == XmlState.Open) { 
-          event = _createXmlEvent(XmlState.Closed);
-        } else {
+        if (event.state != XmlState.Open) { 
           event = addCharToValue(event, ch);
+        } else if (prev == XmlChar.LT) {
+          event = _createXmlEvent(XmlState.Closed);
         }
         break;
       case XmlChar.SPACE:
@@ -139,7 +139,7 @@ class XmlStreamer {
 
   XmlEvent createAndAddXmlEvent(XmlState state) {
     XmlEvent event = _createXmlEvent(state);
-    _controller.add(event);
+      _controller.add(event);
     event.fired = true;
     return event;
   }
