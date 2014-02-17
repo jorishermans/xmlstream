@@ -123,12 +123,23 @@ class XmlStreamer {
   }
   
   XmlEvent _addElement(XmlEvent event) {
-    _controller.add(event);
+    if (_shouldAdd(event)) { _controller.add(event); }
     if (event.state == XmlState.Open) {
       _open_value = event.value;
     } 
     event.fired = true;
     return event;
+  }
+  
+  bool _shouldAdd(XmlEvent event) {
+    if (event.state == XmlState.Attribute || 
+        event.state == XmlState.Open || 
+        event.state == XmlState.Closed) {
+        if (event.key == "" && event.value == "") {
+          return false;
+        }      
+    }
+    return true;
   }
   
   XmlEvent addCharToValue(XmlEvent event, String ch) {
