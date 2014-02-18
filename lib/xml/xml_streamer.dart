@@ -7,6 +7,8 @@ class XmlStreamer {
   String raw;
   String _open_value;
   
+  String special_char;
+  
   StreamController<XmlEvent> _controller;
   
   bool _shutdown = false;
@@ -81,17 +83,21 @@ class XmlStreamer {
       case XmlChar.SPACE:
         if (event.state == XmlState.Open && event.value == '!--') {
           event = _createXmlEvent(XmlState.Comment);
-        } else if (event.state == XmlState.Open || event.state == XmlState.Attribute) {
+        } else if (event.state == XmlState.Open) {
           _addElement(event);
           event = _createXmlEvent(event.state);
           event.fired = true;
+        } else if (event.state == XmlState.Attribute) {
+          if (!event.fired) {
+            event = addCharToValue(event, ch);
+          }
         } else {
           event = addCharToValue(event, ch);
         }
         break;
       case XmlChar.EQUALS:
         var value = event.value;
-        if (event.state == XmlState.Open || event.state == XmlState.Attribute) {
+        if (event.state == XmlState.Open) {
           event = _createXmlEventAndCheck(event, XmlState.Attribute);
           event.key = value;
         } else {
@@ -111,8 +117,14 @@ class XmlStreamer {
         }
         break;
       case XmlChar.SINGLE_QUOTES:
+        if (event.state == XmlState.Attribute) {
+          special_char = _quotes_handling(special_char, ch, event);
+        } 
         break;
       case XmlChar.DOUBLE_QUOTES:
+        if (event.state == XmlState.Attribute) {
+          special_char = _quotes_handling(special_char, ch, event);
+        }
         break;
       case XmlChar.NEWLINE:
         break;
@@ -120,6 +132,18 @@ class XmlStreamer {
         event = addCharToValue(event, ch);
     }
     return event;
+  }
+  
+  String _quotes_handling(String special_char, String ch, XmlEvent event) {
+    if (special_char == null) {
+      return ch;
+    } else if (special_char == ch) {
+      _addElement(event);
+      event = _createXmlEvent(event.state);
+      event.fired = true;
+      
+      return null;
+    }
   }
   
   XmlEvent _addElement(XmlEvent event) {
@@ -137,7 +161,10 @@ class XmlStreamer {
         event.state == XmlState.Closed) {
         if (event.key == "" && event.value == "") {
           return false;
-        }      
+        }
+        if (event.fired) {
+          return false;
+        }
     }
     return true;
   }
