@@ -88,7 +88,7 @@ class XmlStreamer {
           event = _createXmlEvent(event.state);
           event.fired = true;
         } else if (event.state == XmlState.Attribute) {
-          if (!event.fired) {
+          if (!event.fired && special_char != null) {
             event = addCharToValue(event, ch);
           }
         } else {
@@ -99,6 +99,9 @@ class XmlStreamer {
         var value = event.value;
         if (event.state == XmlState.Open) {
           event = _createXmlEventAndCheck(event, XmlState.Attribute);
+          event.key = value;
+        } else if (event.state == XmlState.Attribute && special_char == null) {
+          event = _createXmlEvent(XmlState.Attribute);
           event.key = value;
         } else {
           event.value = "$value$ch";
@@ -118,12 +121,12 @@ class XmlStreamer {
         break;
       case XmlChar.SINGLE_QUOTES:
         if (event.state == XmlState.Attribute) {
-          special_char = _quotes_handling(special_char, ch, event);
+          event = _quotes_handling(ch, event);
         } 
         break;
       case XmlChar.DOUBLE_QUOTES:
         if (event.state == XmlState.Attribute) {
-          special_char = _quotes_handling(special_char, ch, event);
+          event = _quotes_handling(ch, event);
         }
         break;
       case XmlChar.NEWLINE:
@@ -134,24 +137,28 @@ class XmlStreamer {
     return event;
   }
   
-  String _quotes_handling(String special_char, String ch, XmlEvent event) {
+  XmlEvent _quotes_handling(String ch, XmlEvent event) {
     if (special_char == null) {
-      return ch;
+      special_char = ch;
     } else if (special_char == ch) {
       _addElement(event);
       event = _createXmlEvent(event.state);
-      event.fired = true;
       
-      return null;
+      special_char = null;
     }
+    
+    return event;
   }
   
   XmlEvent _addElement(XmlEvent event) {
-    if (_shouldAdd(event)) { _controller.add(event); }
+    if (_shouldAdd(event)) { 
+      _controller.add(event); 
+      event.fired = true;
+    }
     if (event.state == XmlState.Open) {
       _open_value = event.value;
     } 
-    event.fired = true;
+    
     return event;
   }
   
