@@ -6,7 +6,9 @@ class XmlStreamer {
   Stream<List<int>> stream;
   String raw;
   String _open_value;
-  
+  String _cdata;
+  String _comment;
+
   String special_char;
   
   StreamController<XmlEvent> _controller;
@@ -55,86 +57,114 @@ class XmlStreamer {
   }
   
   XmlEvent _processRawChar(var ch, var prev, XmlEvent event) {
-    switch(ch) {
-      case XmlChar.LT:
-        if (event.state != null && event.value.trim().isNotEmpty) {
+    switch (event.state) {
+      case XmlState.CDATA:
+        _cdata += ch;
+        if (_cdata.endsWith("]]>")) {
+          event.value = _cdata.substring(0, _cdata.length - 3);
           _addElement(event);
-        }
-        event = _createXmlEvent(XmlState.Open);
-        break;
-      case XmlChar.GT:
-        if (prev == XmlChar.SLASH) {
-          if ((event.value.length > 0) && (event.value.length -1) == event.value.lastIndexOf("/")) {
-            event.value = event.value.substring(0, event.value.lastIndexOf("/"));
-          }
-          event = _createXmlEventAndCheck(event, XmlState.Closed);
-          event.value = _open_value;
-        }
-        _addElement(event);
-        event = _createXmlEvent(XmlState.Text);
-        break;
-      case XmlChar.SLASH:
-        if (event.state != XmlState.Open) { 
-          event = addCharToValue(event, ch);
-        } else if (prev == XmlChar.LT) {
           event = _createXmlEvent(XmlState.Closed);
         }
-        break;
-      case XmlChar.SPACE:
-        if (event.state == XmlState.Open && event.value == '!--') {
-          event = _createXmlEvent(XmlState.Comment);
-        } else if (event.state == XmlState.Open) {
+        return event;
+      case XmlState.Comment:
+        _comment += ch;
+        if (_comment.endsWith("-->")) {
+          event.value = _comment.substring(0, _comment.length - 3);
           _addElement(event);
-          event = _createXmlEvent(event.state);
-          event.fired = true;
-        } else if (event.state == XmlState.Attribute) {
-          if (!event.fired && special_char != null) {
-            event = addCharToValue(event, ch);
-          }
-        } else {
-          event = addCharToValue(event, ch);
+          event = _createXmlEvent(XmlState.Closed);
         }
-        break;
-      case XmlChar.EQUALS:
-        var value = event.value;
-        if (event.state == XmlState.Open) {
-          event = _createXmlEventAndCheck(event, XmlState.Attribute);
-          event.key = value;
-        } else if (event.state == XmlState.Attribute && special_char == null) {
-          event = _createXmlEvent(XmlState.Attribute);
-          event.key = value;
-        } else {
-          event.value = "$value$ch";
-        }
-        break;
-      case XmlChar.DASH:
-        if (event.state != XmlState.Comment) {
-          event = addCharToValue(event, ch);
-        }
-        break;
-      case XmlChar.QUESTIONMARK:
-        if (prev == XmlChar.LT || event.state == XmlState.Top || event.state == XmlState.StartDocument) {
-          event = _createXmlEvent(XmlState.Top);
-        } else {
-          event = addCharToValue(event, ch);
-        }
-        break;
-      case XmlChar.SINGLE_QUOTES:
-        if (event.state == XmlState.Attribute) {
-          event = _quotes_handling(ch, event);
-        } 
-        break;
-      case XmlChar.DOUBLE_QUOTES:
-        if (event.state == XmlState.Attribute) {
-          event = _quotes_handling(ch, event);
-        }
-        break;
-      case XmlChar.NEWLINE:
-        break;
+        return event;
       default:
-        event = addCharToValue(event, ch);
+        switch (ch) {
+          case XmlChar.LT:
+            if (event.state != null && event.value.trim().isNotEmpty) {
+              _addElement(event);
+            }
+            event = _createXmlEvent(XmlState.Open);
+            break;
+          case XmlChar.GT:
+            if (prev == XmlChar.SLASH) {
+              if ((event.value.length > 0) && (event.value.length - 1) == event.value.lastIndexOf("/")) {
+                event.value = event.value.substring(0, event.value.lastIndexOf("/"));
+              }
+              event = _createXmlEventAndCheck(event, XmlState.Closed);
+              event.value = _open_value;
+            }
+            _addElement(event);
+            event = _createXmlEvent(XmlState.Text);
+            break;
+          case XmlChar.SLASH:
+            if (event.state != XmlState.Open) {
+              event = addCharToValue(event, ch);
+            } else if (prev == XmlChar.LT) {
+              event = _createXmlEvent(XmlState.Closed);
+            }
+            break;
+          case XmlChar.SPACE:
+            if (event.state == XmlState.Open) {
+              _addElement(event);
+              event = _createXmlEvent(event.state);
+              event.fired = true;
+            } else if (event.state == XmlState.Attribute) {
+              if (!event.fired && special_char != null) {
+                event = addCharToValue(event, ch);
+              }
+            } else {
+              event = addCharToValue(event, ch);
+            }
+            break;
+          case XmlChar.EQUALS:
+            var value = event.value;
+            if (event.state == XmlState.Open) {
+              event = _createXmlEventAndCheck(event, XmlState.Attribute);
+              event.key = value;
+            } else if (event.state == XmlState.Attribute && special_char == null) {
+              event = _createXmlEvent(XmlState.Attribute);
+              event.key = value;
+            } else {
+              event.value = "$value$ch";
+            }
+            break;
+          case XmlChar.QUESTIONMARK:
+            if (prev == XmlChar.LT || event.state == XmlState.Top || event.state == XmlState.StartDocument) {
+              event = _createXmlEvent(XmlState.Top);
+            } else {
+              event = addCharToValue(event, ch);
+            }
+            break;
+          case XmlChar.SINGLE_QUOTES:
+            if (event.state == XmlState.Attribute) {
+              event = _quotes_handling(ch, event);
+            }
+            break;
+          case XmlChar.DOUBLE_QUOTES:
+            if (event.state == XmlState.Attribute) {
+              event = _quotes_handling(ch, event);
+            }
+            break;
+          case XmlChar.NEWLINE:
+            break;
+          case XmlChar.HYPHEN:
+            if (event.state == XmlState.Open && event.value == "!-") {
+              event = _createXmlEvent(XmlState.Comment);
+              _comment = "";
+            } else {
+              event = addCharToValue(event, ch);
+            }
+            break;
+          case XmlChar.OPEN_SQUARE_BRACKET:
+            if (event.state == XmlState.Open && event.value == "![CDATA") {
+              event = _createXmlEvent(XmlState.CDATA);
+              _cdata = "";
+            } else {
+              event = addCharToValue(event, ch);
+            }
+            break;
+          default:
+            event = addCharToValue(event, ch);
+        }
+        return event;
     }
-    return event;
   }
   
   XmlEvent _quotes_handling(String ch, XmlEvent event) {
@@ -163,7 +193,8 @@ class XmlStreamer {
   }
   
   bool _shouldAdd(XmlEvent event) {
-    if (event.state == XmlState.Attribute || 
+    if (event.state == XmlState.Attribute ||
+        event.state == XmlState.CDATA ||
         event.state == XmlState.Open || 
         event.state == XmlState.Closed) {
         if (event.key == "" && event.value == "") {

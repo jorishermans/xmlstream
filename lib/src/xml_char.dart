@@ -11,4 +11,6 @@ class XmlChar {
   static const DOUBLE_QUOTES = '"';
   static const DASH = "-";
   static const NEWLINE = "\n";
+  static const HYPHEN = "-";
+  static const OPEN_SQUARE_BRACKET = "[";
 }
