@@ -1,6 +1,6 @@
 ### Changelog ###
 
-This file contains highlights of what changes on each version of the forcemvc package. 
+This file contains highlights of what changes on each version of the xmlstream package. 
 
 #### Pub version 0.9.0 ####
 
