@@ -18,6 +18,8 @@ class XmlObjectBuilder<T> {
       _xmlProcessor.shouldAttribute(e.key, e.value);
     } else if (e.state == XmlState.Text) {
       _xmlProcessor.shouldCharacters(e.value);
+    } else if (e.state == XmlState.CDATA) {
+      _xmlProcessor.shouldCharacters(e.value);
     } else if (e.state == XmlState.EndDocument) {
       _onFinishedEvent.signal();
     }
