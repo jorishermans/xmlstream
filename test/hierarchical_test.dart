@@ -1,4 +1,4 @@
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:xmlstream/xmlstream.dart';
 import 'dart:io';
 import 'dart:async';
@@ -35,7 +35,8 @@ main() {
       test('using a stream', () {
         var c = new Completer();
         var streamCount = 0;
-        var stream = new File("./test1.xml").openRead(); 
+        var filePath = Platform.script.resolve('./test1.xml').toFilePath();
+        var stream = new File(filePath).openRead(); 
         var xmlStreamer = new XmlStreamer.fromStream(stream);
         xmlStreamer.read().listen((e) {
           expect(e.state, states[streamCount]);

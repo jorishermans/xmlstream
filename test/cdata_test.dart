@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:xmlstream/xmlstream.dart';
 
 main() {
