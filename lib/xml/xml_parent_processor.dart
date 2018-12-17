@@ -1,6 +1,6 @@
 part of xml_stream;
 
-abstract class XmlParentProcessor<T> extends XmlProcessor {
+abstract class XmlParentProcessor<T> extends XmlProcessor<T> {
   
   List<XmlProcessor> _children = new List<XmlProcessor>();
   

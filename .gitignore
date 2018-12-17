@@ -5,3 +5,5 @@ packages
 *.js
 pubspec.lock
 .idea
+.packages
+.dart_tool
