@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the xmlstream package. 
 
+#### Pub version 0.11.1 ####
+
+- update description of this package
+
 #### Pub version 0.11.0 ####
 
 - update for Dart 2

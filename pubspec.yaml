@@ -1,7 +1,7 @@
 name: xmlstream
-version: 0.11.0
+version: 0.11.1
 author: Joris Hermans <hermansj@gmail.com>
-description: A streaming event-based XML Parser.
+description: A lightweight library streaming event-based XML Parser to parse XML Documents as a SAX.
 homepage: https://github.com/jorishermans/xmlstream
 dev_dependencies:
   test: '>=1.5.1+1 <1.5.2'
