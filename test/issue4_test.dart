@@ -9,9 +9,9 @@ main() {
     var values = ["", "item", "This is a test", "42", "item", ""];
     int count = 0;
     
-    var xmlStreamer = new XmlStreamer(rawText);
-    xmlStreamer.read().listen((e) {
-      test('basic xml streaming $e', () {
+    test('basic xml streaming', () {
+      var xmlStreamer = new XmlStreamer(rawText);
+      xmlStreamer.read().listen((e) {
         expect(e.state, states[count]);
         expect(e.value, values[count]);
         count++;

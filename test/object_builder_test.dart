@@ -2,25 +2,23 @@ import 'package:test/test.dart';
 import 'package:xmlstream/xmlstream.dart';
 
 void main() {
-  print("Hello, World!");
-  
-  var rawText = '<?xml version="1.0" encoding="UTF-8"?><item name="flow">world</item><item name="text">say what?</item>';
-  
-  var xmlStreamer = new XmlStreamer(rawText);
-  
-  var xmlObjectBuilder = new XmlObjectBuilder<Item>(xmlStreamer, new ItemProcessor());
-  
-  List<Item> items = new List<Item>();
-  xmlObjectBuilder.onProcess().listen((data) => items.add(data), // output the data
-      onError: (error) => print("Error, could not open file"),
-      onDone: () => print("Finished reading data")); 
-  
-  xmlObjectBuilder.onFinished.listen((_) {
-    test('testing end result items', () {
-      expect(items.length, 2);
-      expect(items.first.name, "flow");
-      expect(items.last.value, "say what?");
-    });
+  test('testing end result items', () {
+    var rawText = '<?xml version="1.0" encoding="UTF-8"?><item name="flow">world</item><item name="text">say what?</item>';
+    
+    var xmlStreamer = new XmlStreamer(rawText);
+    
+    var xmlObjectBuilder = new XmlObjectBuilder<Item>(xmlStreamer, new ItemProcessor());
+    
+    List<Item> items = new List<Item>();
+    xmlObjectBuilder.onProcess().listen((data) => items.add(data), // output the data
+        onError: (error) => print("Error, could not open file"),
+        onDone: () => print("Finished reading data")); 
+    
+    xmlObjectBuilder.onFinished.listen((_) {
+        expect(items.length, 2);
+        expect(items.first.name, "flow");
+        expect(items.last.value, "say what?");
+      });
   });
 }
 
