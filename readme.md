@@ -11,7 +11,7 @@ The xmlStreamer will send an XmlEvent that will contain the state and value of a
 See here a simple example how to use it in your application.
 
 	var xmlStreamer = new XmlStreamer(rawText);
-	xmlStreamer.read().listen((e) => print("listen: $e"));
+	...
 	
 These are the xml states:
 
