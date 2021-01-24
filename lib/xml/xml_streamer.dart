@@ -4,7 +4,10 @@ class XmlStreamer {
   static const EMPTY = '';
   
   Stream<List<int>> stream;
+  // raw xmldata that needs to be parsed
   String raw;
+  // trim before lt character
+  bool trimSpaces = true;
   String _open_value;
   String _cdata;
   String _comment;
@@ -15,7 +18,8 @@ class XmlStreamer {
   
   bool _shutdown = false;
   
-  XmlStreamer(this.raw);
+  
+  XmlStreamer(this.raw, {this.trimSpaces = true});
   
   XmlStreamer.fromStream(this.stream);
   
@@ -77,7 +81,8 @@ class XmlStreamer {
       default:
         switch (ch) {
           case XmlChar.LT:
-            if (event.state != null && event.value.trim().isNotEmpty) {
+            if (this.trimSpaces) { event.value = event.value.trim(); }
+            if (event.state != null && event.value.isNotEmpty) {
               _addElement(event);
             }
             event = _createXmlEvent(XmlState.Open);
