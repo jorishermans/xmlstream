@@ -23,6 +23,12 @@ These are the xml states:
 
 Namespace and cdate are still on the todo list to support!
 
+You can add an option to XmlStream to trim space or not, standard he will do this.
+
+	var xmlStreamer = new XmlStreamer(rawText, trimSpaces: false);
+	xmlStreamer.read().listen((e) => print("listen: $e"));
+	
+
 ### Object builder usage ###
 
 In this package we provide also the opportunity to build and stream Objects.
