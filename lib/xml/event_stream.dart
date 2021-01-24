@@ -5,7 +5,7 @@ abstract class NotifyPropertyChanged {
 }
 
 class EventStream<T> {
-  StreamController<T> _controller = new StreamController<T>();
+  StreamController<T> _controller = StreamController<T>();
   Stream<T> stream;
 
   EventStream() {
@@ -18,7 +18,7 @@ class EventStream<T> {
 }
 
 class EventArgs {
-  static final EventArgs empty = new EventArgs();
+  static final EventArgs empty = EventArgs();
   EventArgs();
 }
 
