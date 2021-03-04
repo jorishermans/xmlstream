@@ -2,7 +2,7 @@ part of xml_stream;
 
 abstract class XmlParentProcessor<T> extends XmlProcessor<T> {
   
-  List<XmlProcessor> _children = new List<XmlProcessor>();
+  List<XmlProcessor?> _children = List<XmlProcessor?>.empty(growable: true);
   
   XmlParentProcessor() {
     registerProcessors();
@@ -10,35 +10,35 @@ abstract class XmlParentProcessor<T> extends XmlProcessor<T> {
   
   void registerProcessors();
   
-  void add(XmlProcessor xmlProcessor) {
+  void add(XmlProcessor? xmlProcessor) {
     _children.add(xmlProcessor);
   }
   
-  void shouldOpenTag(String tag) {
+  void shouldOpenTag(String? tag) {
     super.shouldOpenTag(tag);
-    for (XmlProcessor child in _children) {
-      child.shouldOpenTag(tag);
+    for (XmlProcessor? child in _children) {
+      child!.shouldOpenTag(tag);
     };
   }
   
-  void shouldClosedTag(String tag) {
+  void shouldClosedTag(String? tag) {
     super.shouldClosedTag(tag);
-    for (XmlProcessor child in _children) {
-      child.shouldClosedTag(tag);
+    for (XmlProcessor? child in _children) {
+      child!.shouldClosedTag(tag);
     };
   }
   
-  void shouldAttribute(String key, String value) {
+  void shouldAttribute(String? key, String? value) {
     super.shouldAttribute(key, value);
-    for (XmlProcessor child in _children) {
-      child.shouldAttribute(key, value);
+    for (XmlProcessor? child in _children) {
+      child!.shouldAttribute(key, value);
     };
   }
 
-  void shouldCharacters(String text) {
+  void shouldCharacters(String? text) {
     super.shouldCharacters(text);
-    for (XmlProcessor child in _children) {
-      child.shouldCharacters(text);
+    for (XmlProcessor? child in _children) {
+      child!.shouldCharacters(text);
     };
   }
 }

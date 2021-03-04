@@ -5,15 +5,15 @@ abstract class NotifyPropertyChanged {
 }
 
 class EventStream<T> {
-  StreamController<T> _controller = StreamController<T>();
-  Stream<T> stream;
+  StreamController<T?> _controller = StreamController<T>();
+  Stream<T?>? stream;
 
   EventStream() {
     stream = _controller.stream.asBroadcastStream();
   }
 
-  signal([T value]) {
-    _controller.add(value != null ? value : EventArgs.empty);
+  signal([T? value]) {
+    _controller.add(value != null ? value : EventArgs.empty as T?);
   }
 }
 

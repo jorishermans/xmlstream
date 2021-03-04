@@ -7,7 +7,7 @@ main() {
   var rawText = '''
 <?xml version="1.0" encoding="UTF-8"?>
 <item><![CDATA[One Two]]></item>''';
-  var list = new List<List<int>>();
+  var list = List<List<int>>.empty(growable: true);
   list.add(rawText.codeUnits);
   var stream = new Stream.fromIterable(list);
 
