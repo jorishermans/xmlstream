@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the xmlstream package. 
 
+#### Pub version 1.0.0 ####
+
+- migrate to null safety
+
 #### Pub version 0.12.0 ####
 
 - introduced optional parameter trimSpaces to trim spaces or not in xmlstream

@@ -25,12 +25,12 @@ class XmlObjectBuilder<T> {
     }
   }
   
-  Stream<T> onProcess() {
+  Stream<T?> onProcess() {
     return _xmlProcessor.onProcess();
   }
   
   final EventStream _onFinishedEvent = new EventStream();
-  Stream get onFinished => _onFinishedEvent.stream;
+  Stream? get onFinished => _onFinishedEvent.stream;
   
   void shutdown() {
     _xmlStream.shutdown();

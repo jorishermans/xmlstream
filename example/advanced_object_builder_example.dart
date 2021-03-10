@@ -22,12 +22,12 @@ void main() {
 }
 
 class ItemProcessor extends XmlParentProcessor<Item> {
-  SubItemProcessor subItemProcessor;
+  SubItemProcessor? subItemProcessor;
   
   void registerProcessors() {
     subItemProcessor = new SubItemProcessor();
-    subItemProcessor.onProcess().listen((value) { 
-      if (isScope()) element.add(value); 
+    subItemProcessor!.onProcess().listen((value) { 
+      if (isScope()) element!.add(value); 
     });
     add(subItemProcessor);
   }
@@ -36,17 +36,17 @@ class ItemProcessor extends XmlParentProcessor<Item> {
     tagName = "item";
   }
   
-  void onOpenTag(String tag) {
+  void onOpenTag(String? tag) {
      element = new Item();
   }
   
-  void onAttribute(String key, String value) {
+  void onAttribute(String? key, String? value) {
     if (key == "name") {
-      element.name = value;
+      element!.name = value;
     }
   }
 
-  void onCharacters(String text) {} 
+  void onCharacters(String? text) {} 
 }
 
 class SubItemProcessor extends XmlProcessor<SubItem> {
@@ -55,33 +55,33 @@ class SubItemProcessor extends XmlProcessor<SubItem> {
     tagName = "sub";
   }
   
-  void onOpenTag(String tag) {
+  void onOpenTag(String? tag) {
      element = new SubItem();
   }
   
-  void onAttribute(String key, String value) {
+  void onAttribute(String? key, String? value) {
     if (key == "name") {
-      element.name = value;
+      element!.name = value;
     }
   }
 
-  void onCharacters(String text) {
-      element.value = text;
+  void onCharacters(String? text) {
+      element!.value = text;
   } 
 }
 
 class Item {
-  String name;
-  List<SubItem> subItems = new List<SubItem>();
+  String? name;
+  List<SubItem?> subItems = List<SubItem?>.empty(growable: true);
   
-  void add(SubItem subItem) => subItems.add(subItem);
+  void add(SubItem? subItem) => subItems.add(subItem);
   
   String toString() => "$name --> $subItems";
 }
 
 class SubItem {
-  String name;
-  String value;
+  String? name;
+  String? value;
   
   String toString() => "$name - $value";
 }

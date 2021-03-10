@@ -3,18 +3,18 @@ part of xml_stream;
 class XmlStreamer {
   static const EMPTY = '';
   
-  Stream<List<int>> stream;
+  Stream<List<int>>? stream;
   // raw xmldata that needs to be parsed
-  String raw;
+  String? raw;
   // trim before lt character
   bool trimSpaces = true;
-  String _open_value;
-  String _cdata;
-  String _comment;
+  String? _open_value;
+  late String _cdata;
+  late String _comment;
 
-  String special_char;
+  String? special_char;
   
-  StreamController<XmlEvent> _controller;
+  late StreamController<XmlEvent> _controller;
   
   bool _shutdown = false;
   
@@ -27,9 +27,9 @@ class XmlStreamer {
     _controller = new StreamController<XmlEvent>();
     XmlEvent event = createAndAddXmlEvent(XmlState.StartDocument);
   
-    String prev;
+    String? prev;
     if (this.stream == null) {
-      var chars_raw = this.raw.split("");
+      var chars_raw = this.raw!.split("");
       for (var ch in chars_raw) {
         event = _processRawChar(ch, prev, event);
         prev = ch;
@@ -38,7 +38,7 @@ class XmlStreamer {
       createAndAddXmlEvent(XmlState.EndDocument);
       _controller.close();
     } else {
-      StreamSubscription controller;
+      late StreamSubscription controller;
       var onData = (data) {
         var chars_raw = new String.fromCharCodes(data).split("");
         for (var ch in chars_raw) {
@@ -50,7 +50,7 @@ class XmlStreamer {
           }
         }
       };
-      controller = stream.listen(onData,
+      controller = stream!.listen(onData,
           onDone: () {
             createAndAddXmlEvent(XmlState.EndDocument);
             _controller.close();
@@ -81,16 +81,16 @@ class XmlStreamer {
       default:
         switch (ch) {
           case XmlChar.LT:
-            if (this.trimSpaces) { event.value = event.value.trim(); }
-            if (event.state != null && event.value.isNotEmpty) {
+            if (this.trimSpaces) { event.value = event.value!.trim(); }
+            if (event.state != null && event.value!.isNotEmpty) {
               _addElement(event);
             }
             event = _createXmlEvent(XmlState.Open);
             break;
           case XmlChar.GT:
             if (prev == XmlChar.SLASH) {
-              if ((event.value.length > 0) && (event.value.length - 1) == event.value.lastIndexOf("/")) {
-                event.value = event.value.substring(0, event.value.lastIndexOf("/"));
+              if ((event.value!.length > 0) && (event.value!.length - 1) == event.value!.lastIndexOf("/")) {
+                event.value = event.value!.substring(0, event.value!.lastIndexOf("/"));
               }
               event = _createXmlEventAndCheck(event, XmlState.Closed);
               event.value = _open_value;

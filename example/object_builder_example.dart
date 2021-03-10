@@ -18,24 +18,24 @@ class ItemProcessor extends XmlProcessor<Item> {
     tagName = "item";
   }
   
-  void onOpenTag(String tag) {
+  void onOpenTag(String? tag) {
      element = new Item();
   }
   
-  void onAttribute(String key, String value) {
+  void onAttribute(String? key, String? value) {
     if (key == "name") {
-      element.name = value;
+      element!.name = value;
     }
   }
 
-  void onCharacters(String text) {
-    element.value = text;
+  void onCharacters(String? text) {
+    element!.value = text;
   } 
 }
 
 class Item {
-  String name;
-  String value;
+  String? name;
+  String? value;
   
   String toString() => "$name - $value";
 }
