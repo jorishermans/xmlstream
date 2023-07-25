@@ -2,7 +2,7 @@ part of xml_stream;
 
 class XmlStreamer {
   static const EMPTY = '';
-
+  
   Stream<List<int>>? stream;
   // raw xmldata that needs to be parsed
   String? raw;
@@ -13,19 +13,20 @@ class XmlStreamer {
   late String _comment;
 
   String? special_char;
-
+  
   late StreamController<XmlEvent> _controller;
-
+  
   bool _shutdown = false;
-
+  
+  
   XmlStreamer(this.raw, {this.trimSpaces = true});
-
+  
   XmlStreamer.fromStream(this.stream);
-
+  
   Stream<XmlEvent> read() {
     _controller = new StreamController<XmlEvent>();
     XmlEvent event = createAndAddXmlEvent(XmlState.StartDocument);
-
+  
     String? prev;
     if (this.stream == null) {
       var chars_raw = this.raw!.split("");
@@ -49,15 +50,16 @@ class XmlStreamer {
           }
         }
       };
-      controller = stream!.listen(onData, onDone: () {
-        createAndAddXmlEvent(XmlState.EndDocument);
-        _controller.close();
-      });
+      controller = stream!.listen(onData,
+          onDone: () {
+            createAndAddXmlEvent(XmlState.EndDocument);
+            _controller.close();
+          });
     }
 
     return _controller.stream;
   }
-
+  
   XmlEvent _processRawChar(var ch, var prev, XmlEvent event) {
     switch (event.state) {
       case XmlState.CDATA:
@@ -79,9 +81,7 @@ class XmlStreamer {
       default:
         switch (ch) {
           case XmlChar.LT:
-            if (this.trimSpaces) {
-              event.value = event.value!.trim();
-            }
+            if (this.trimSpaces) { event.value = event.value!.trim(); }
             if (event.state != null && event.value!.isNotEmpty) {
               _addElement(event);
             }
@@ -175,44 +175,47 @@ class XmlStreamer {
         return event;
     }
   }
-
+  
   XmlEvent _quotes_handling(String ch, XmlEvent event) {
     if (special_char == null) {
       special_char = ch;
     } else if (special_char == ch) {
       _addElement(event);
       event = _createXmlEvent(event.state);
-
+      
       special_char = null;
     }
-
+    
     return event;
   }
-
+  
   XmlEvent _addElement(XmlEvent event) {
-    if (_shouldAdd(event)) {
-      _controller.add(event);
+    if (_shouldAdd(event)) { 
+      _controller.add(event); 
       event.fired = true;
     }
     if (event.state == XmlState.Open) {
       _open_value = event.value;
-    }
-
+    } 
+    
     return event;
   }
-
+  
   bool _shouldAdd(XmlEvent event) {
-    if (event.state == XmlState.Attribute || event.state == XmlState.CDATA || event.state == XmlState.Open || event.state == XmlState.Closed) {
-      if (event.key == "" && event.value == "") {
-        return false;
-      }
-      if (event.fired) {
-        return false;
-      }
+    if (event.state == XmlState.Attribute ||
+        event.state == XmlState.CDATA ||
+        event.state == XmlState.Open || 
+        event.state == XmlState.Closed) {
+        if (event.key == "" && event.value == "") {
+          return false;
+        }
+        if (event.fired) {
+          return false;
+        }
     }
     return true;
   }
-
+  
   XmlEvent addCharToValue(XmlEvent event, String ch) {
     var value = event.value;
     event.value = "$value$ch";
@@ -221,27 +224,24 @@ class XmlStreamer {
 
   XmlEvent createAndAddXmlEvent(XmlState state) {
     XmlEvent event = _createXmlEvent(state);
-    _controller.add(event);
+      _controller.add(event);
     event.fired = true;
     return event;
   }
-
+  
   XmlEvent _createXmlEventAndCheck(XmlEvent event, XmlState state) {
     if (event.fired == false) {
       _addElement(event);
     }
     return _createXmlEvent(state);
   }
-
+  
   XmlEvent _createXmlEvent(XmlState state) {
     XmlEvent event = new XmlEvent(state);
-    event
-      ..value = EMPTY
-      ..key = EMPTY;
+    event..value=EMPTY
+         ..key=EMPTY;
     return event;
   }
-
-  void shutdown() {
-    _shutdown = true;
-  }
+  
+  void shutdown() { _shutdown = true; }
 }
