@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the xmlstream package. 
 
+#### Pub version 1.1.1 ####
+
+- use correct readme file, make it README.md instead of readme.md
+
 #### Pub version 1.1.0 ####
 
 - adding support for quotes in XmlState.Text
