@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the xmlstream package. 
 
+#### Pub version 1.1.0 ####
+
+- adding support for quotes in XmlState.Text
+
 #### Pub version 1.0.0 ####
 
 - migrate to null safety
